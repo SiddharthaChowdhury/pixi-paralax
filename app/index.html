@@ -5,13 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Pixi parallax</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        /* body { background-color: #000000; }
-         */
-         canvas { background-color: #fff; }
-    </style>
-    <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="main.js"></script> -->
 </head>
 <body onload="init();">
     <div align="center">
@@ -19,7 +12,9 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.0.0/pixi.min.js"></script>
     <script>
+
         var sprites = {};
+
         function init() {
             stage = new PIXI.Container();
             renderer = PIXI.autoDetectRenderer(
@@ -29,6 +24,7 @@
             );
             renderer.backgroundColor = 0xffffff;
 
+            // http://pixijs.download/dev/docs/PIXI.loaders.Loader.html
             var loader = PIXI.loader;
             loader.add('hills', '/image/far_0.png');
             loader.add('clouds', '/image/far_1.png');
