@@ -19,6 +19,7 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.0.0/pixi.min.js"></script>
     <script>
+        var sprites = {};
         function init() {
             stage = new PIXI.Container();
             renderer = PIXI.autoDetectRenderer(
@@ -26,33 +27,37 @@
                 384,
                 {view:document.getElementById("game-canvas")}
             );
-
             renderer.backgroundColor = 0xffffff;
 
-            var textureHills = PIXI.Texture.fromImage("/image/far_0.png");
-            console.log(textureHills.baseTexture.realWidth);
-            hills = new PIXI.extras.TilingSprite(textureHills, 1513, 100);
-            
-            hills.position.x = 0;
-            hills.position.y = 128;
-            hills.tilePosition.x = 0;
-            hills.tilePosition.y = 0;
-            stage.addChild(hills);
+            var loader = PIXI.loader;
+            loader.add('hills', '/image/far_0.png');
+            loader.add('clouds', '/image/far_1.png');
 
-            var textureCloud = PIXI.Texture.fromImage("/image/far_1.png");
-            clouds = new PIXI.extras.TilingSprite(textureCloud, 1513, 100);
-            clouds.position.x = 0;
-            clouds.position.y = 0;
-            clouds.tilePosition.x = 0;
-            clouds.tilePosition.y = 0;
-            stage.addChild(clouds);
-            
-            requestAnimationFrame(update);
+            loader.load((loader, resources) => {
+                sprites.hills = new PIXI.extras.TilingSprite(resources.hills.texture, resources.hills.texture.baseTexture.width, resources.hills.texture.baseTexture.height);
+                sprites.clouds = new PIXI.extras.TilingSprite(resources.clouds.texture, resources.clouds.texture.baseTexture.width, resources.clouds.texture.baseTexture.height);
+                configure();
+                requestAnimationFrame(update);
+            });
+        }
+
+        function configure() {
+            sprites.hills.position.x = 0;
+            sprites.hills.position.y = 128;
+            sprites.hills.tilePosition.x = 0;
+            sprites.hills.tilePosition.y = 0;
+            stage.addChild(sprites.hills);
+
+            sprites.clouds.position.x = 0;
+            sprites.clouds.position.y = 0;
+            sprites.clouds.tilePosition.x = 0;
+            sprites.clouds.tilePosition.y = 0;
+            stage.addChild(sprites.clouds);
         }
 
         function update() {
-            hills.tilePosition.x -= 0.2;
-            clouds.tilePosition.x -= 0.4;
+            sprites.hills.tilePosition.x -= 0.2;
+            sprites.clouds.tilePosition.x -= 0.4;
 
             renderer.render(stage);
 
