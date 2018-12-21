@@ -1,15 +1,20 @@
 var
 Container               = PIXI.Container,
-TestureCache            = PIXI.utils.TextureCache,
+TextureCache            = PIXI.utils.TextureCache,
 TilingSprite            = PIXI.TilingSprite,
 autoDetectRenderer      = PIXI.autoDetectRenderer,
 loader                  = PIXI.loader,
 resources               = loader.resources,
 sprites                 = {},
-animations              = {},
 stage                   = new Container(),
 scene                   = new Container(),
 player                  = new Container();
+
+// this needs to be implemented next (a state object of the game)
+var gameState = {
+    sprites: {},
+    playerChildren: "",
+}
 
 let renderer = autoDetectRenderer(512, 256);
 
@@ -48,7 +53,7 @@ function setup() {
     stage.addChild(player);
 
     function setupScene () {
-        console.log("TestureCache ", TestureCache);
+        console.log("TextureCache ", TextureCache);
         console.log("resources ", resources);
         let hills = resources.hills.texture;
         let clouds = resources.clouds.texture;
@@ -56,8 +61,8 @@ function setup() {
         sprites.hills = new PIXI.TilingSprite(hills, hills.baseTexture.width, hills.baseTexture.height);
         sprites.clouds = new PIXI.TilingSprite(clouds, clouds.baseTexture.width, clouds.baseTexture.height);
 
-        addToScene(sprites.hills, {x: 0, y: 128}, {x: 0, y: 0})
-        addToScene(sprites.clouds, {x: 0, y: 0}, {x: 0, y: 0})
+        addToScene(sprites.hills, {x: 0, y: 128}, {x: 0, y: 0});
+        addToScene(sprites.clouds, {x: 0, y: 0}, {x: 0, y: 0});
     }
 
     function setupPlayer () {
@@ -96,7 +101,7 @@ function runningPlayer () {
     var textureArrayRunning = [];
 
     for (let i = 4; i <= 6; i++) {
-        let testure = TestureCache[i+'.png'];
+        let testure = TextureCache[i+'.png'];
         textureArrayRunning.push(testure);
     }
 
@@ -115,7 +120,7 @@ function jumpingPlayer () {
     ticker.stop();
     ticker.add((deltaTime) => {
         // do something every frame
-        console.log("deltaTime "+ deltaTime)
+        console.log("deltaTime "+ deltaTime);
     });
     ticker.start();
 }
