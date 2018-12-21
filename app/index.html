@@ -5,60 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Pixi parallax</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>body {text-align: center;}</style>
 </head>
 <body onload="init();">
-    <div align="center">
-        <canvas id="game-canvas" width="512" height="384"></canvas>
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.0.0/pixi.min.js"></script>
-    <script>
-
-        var sprites = {};
-
-        function init() {
-            stage = new PIXI.Container();
-            renderer = PIXI.autoDetectRenderer(
-                512,
-                384,
-                {view:document.getElementById("game-canvas")}
-            );
-            renderer.backgroundColor = 0xffffff;
-
-            // http://pixijs.download/dev/docs/PIXI.loaders.Loader.html
-            var loader = PIXI.loader;
-            loader.add('hills', '/image/far_0.png');
-            loader.add('clouds', '/image/far_1.png');
-
-            loader.load((loader, resources) => {
-                sprites.hills = new PIXI.extras.TilingSprite(resources.hills.texture, resources.hills.texture.baseTexture.width, resources.hills.texture.baseTexture.height);
-                sprites.clouds = new PIXI.extras.TilingSprite(resources.clouds.texture, resources.clouds.texture.baseTexture.width, resources.clouds.texture.baseTexture.height);
-                configure();
-                requestAnimationFrame(update);
-            });
-        }
-
-        function configure() {
-            sprites.hills.position.x = 0;
-            sprites.hills.position.y = 128;
-            sprites.hills.tilePosition.x = 0;
-            sprites.hills.tilePosition.y = 0;
-            stage.addChild(sprites.hills);
-
-            sprites.clouds.position.x = 0;
-            sprites.clouds.position.y = 0;
-            sprites.clouds.tilePosition.x = 0;
-            sprites.clouds.tilePosition.y = 0;
-            stage.addChild(sprites.clouds);
-        }
-
-        function update() {
-            sprites.hills.tilePosition.x -= 0.2;
-            sprites.clouds.tilePosition.x -= 0.4;
-
-            renderer.render(stage);
-
-            requestAnimationFrame(update);
-        }
-    </script>
+    <script src="/js/pixi.min.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>
