@@ -1,7 +1,7 @@
 const animationState = {
     RUNNING: "RUNNING",
     JUMPING: "JUMPING",
-    DUCKING: "DUCKING",
+    ROLLING: "ROLLING",
 };
 
 var gameState = {

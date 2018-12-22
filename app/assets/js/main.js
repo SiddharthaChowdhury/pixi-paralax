@@ -9,7 +9,7 @@ stage                   = new Container(),
 scene                   = new Container(),
 player                  = new Container();
 
-let renderer = autoDetectRenderer(512, 256);
+let renderer = autoDetectRenderer(512, 400);
 
 function init() {
     renderer.backgroundColor = 0xffffff;
@@ -24,14 +24,21 @@ function init() {
 
     renderer.plugins.interaction.on( 'mousedown', function() { 
         console.log('mousedown');  
-        jumpingPlayer();
+        // jumpingPlayer();
+        rollingPlayer();
     });
+
+    renderer.plugins.interaction.on( 'rightdown', function(e) {
+        console.log('rightdown');  
+        jumpingPlayer();
+        // rollingPlayer();
+    }); 
 }
 
 function loadResource() {
     loader.add('hills', '/image/far_0.png');
     loader.add('clouds', '/image/far_1.png');
-    loader.add('playerSpriteSheet','/sprites/playerrun.json');
+    loader.add('playerSpriteSheet','/sprites/sprites.json');
     loader.on('progress', (_loader, resource) => {
         console.log(`Loading: ${resource.name} (${_loader.progress}%)`);
     });
@@ -45,7 +52,7 @@ function loadResource() {
 function setup() {
 
     setupScene();
-    setupPlayer();
+    resetPlayer();
 
     stage.addChild(scene);
     stage.addChild(player);
@@ -53,8 +60,8 @@ function setup() {
     // player.on( 'mousedown', function() { console.log('mousedown') } );
 
     function setupScene () {
-        // console.log("TextureCache ", TextureCache);
-        // console.log("resources ", resources);
+        console.log("TextureCache ", TextureCache);
+        console.log("resources ", resources);
         let hills = resources.hills.texture;
         let clouds = resources.clouds.texture;
 
@@ -65,10 +72,19 @@ function setup() {
         addToScene(gameState.sprites.clouds, {x: 0, y: 0}, {x: 0, y: 0});
     }
 
-    function setupPlayer () {
-        toDefaultPlayerAnimation();
-    }
-    
+}
+
+function resetPlayer () {
+    defaultPlayerTransform();
+    toDefaultPlayerAnimation();
+}
+
+function defaultPlayerTransform () {
+    let scalePoint = new PIXI.Point(0.15, 0.15);
+    let positionPoint = new PIXI.Point(gameState.groundSurface.x, gameState.groundSurface.y);
+
+    player.scale  = scalePoint;
+    player.position = positionPoint;
 }
 
 function addToScene(sprite, position, tilePosition = null) {

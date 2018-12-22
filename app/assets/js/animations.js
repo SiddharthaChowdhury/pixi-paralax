@@ -8,19 +8,19 @@
 
 function runningPlayer () {
     gameState.playerInfo.activeAnimation = animationState.RUNNING;
-    var textureArrayRunning = [];
+    let textureArrayRunning = [];
 
-    for (let i = 4; i <= 6; i++) {
-        let testure = TextureCache[i+'.png'];
+    for (let i = 1; i <= 3; i++) {
+        let testure = TextureCache['run'+i];
         textureArrayRunning.push(testure);
     }
 
     let animationRunningSprite = new PIXI.extras.AnimatedSprite(textureArrayRunning);
     animationRunningSprite.position.set(gameState.groundSurface.x, gameState.groundSurface.y);
-    animationRunningSprite.anchor.set(0.5);
+    animationRunningSprite.anchor.set(0, 1);
     animationRunningSprite.animationSpeed = .15;
     animationRunningSprite.play();
-    gameState.activeAnimation = animationState.RUNNING;
+
     flushPlayerContainer();
     player.addChild(animationRunningSprite);
 }
@@ -32,12 +32,9 @@ function jumpingPlayer () {
     }
     gameState.playerInfo.activeAnimation = animationState.JUMPING;
 
-    let jumpingSpriteArr = [TextureCache['3.png']];
+    let jumpingSpriteArr = [TextureCache['jump']];
     let jumpingSprite = new PIXI.extras.AnimatedSprite(jumpingSpriteArr);
     let jumpDelta = 5;
-
-    jumpingSprite.anchor.set(0.5);
-    jumpingSprite.position.set(gameState.groundSurface.x, gameState.groundSurface.y);
 
     var smoothie = new Smoothie({
         engine: PIXI, 
@@ -54,25 +51,25 @@ function jumpingPlayer () {
     function update(){
     
         if (jumpState === "LAND") {
-            // console.log("Landing", jumpingSprite.y)
-            jumpingSprite.y = gameState.groundSurface.y
+            // console.log("Landing", player.y)
+            player.y = gameState.groundSurface.y
             smoothie.pause();
             toDefaultPlayerAnimation();
         }
 
         if (jumpState === "DOWN") {
-            // console.log("falling down", jumpingSprite.y)
-            jumpingSprite.y += jumpDelta;
+            // console.log("falling down", player.y)
+            player.y += jumpDelta;
 
-            if (jumpingSprite.y > gameState.groundSurface.y - jumpDelta) {
+            if (player.y > gameState.groundSurface.y - jumpDelta) {
                 jumpState = "LAND";
             }
         }
         
         if (jumpState === "UP") {
-            // console.log("going up", jumpingSprite.y)
-            jumpingSprite.y -= jumpDelta;
-            if (jumpingSprite.y < 160 ) {
+            // console.log("going up", player.y)
+            player.y -= jumpDelta;
+            if (player.y < 160 ) {
                 jumpState = "DOWN";
             }
         }
@@ -82,6 +79,26 @@ function jumpingPlayer () {
     smoothie.start();
 }
 
+
+function rollingPlayer () {
+    gameState.playerInfo.activeAnimation = animationState.ROLLING;
+    let textureArrayRolling = [];
+
+    for (let i = 1; i <= 6; i++) {
+        let testure = TextureCache['roll'+i];
+        textureArrayRolling.push(testure);
+    }
+
+    let animationRollingSprite = new PIXI.extras.AnimatedSprite(textureArrayRolling);
+    animationRollingSprite.animationSpeed = .15;
+    animationRollingSprite.loop = false;
+    animationRollingSprite.onComplete = () => {
+        resetPlayer();
+    }
+    animationRollingSprite.play();
+    flushPlayerContainer();
+    player.addChild(animationRollingSprite);
+}
 
 function flushPlayerContainer() {
     for (let i = 0; i < player.children.length; i++) {
