@@ -5,16 +5,9 @@ TilingSprite            = PIXI.TilingSprite,
 autoDetectRenderer      = PIXI.autoDetectRenderer,
 loader                  = PIXI.loader,
 resources               = loader.resources,
-sprites                 = {},
 stage                   = new Container(),
 scene                   = new Container(),
 player                  = new Container();
-
-// this needs to be implemented next (a state object of the game)
-var gameState = {
-    sprites: {},
-    playerChildren: "",
-}
 
 let renderer = autoDetectRenderer(512, 256);
 
@@ -28,6 +21,11 @@ function init() {
     loader.onComplete.add(() => {
         console.log("Loading Complete ...")
     })
+
+    renderer.plugins.interaction.on( 'mousedown', function() { 
+        console.log('mousedown');  
+        jumpingPlayer();
+    });
 }
 
 function loadResource() {
@@ -51,22 +49,24 @@ function setup() {
 
     stage.addChild(scene);
     stage.addChild(player);
+    // player.interactive = true;
+    // player.on( 'mousedown', function() { console.log('mousedown') } );
 
     function setupScene () {
-        console.log("TextureCache ", TextureCache);
-        console.log("resources ", resources);
+        // console.log("TextureCache ", TextureCache);
+        // console.log("resources ", resources);
         let hills = resources.hills.texture;
         let clouds = resources.clouds.texture;
 
-        sprites.hills = new PIXI.TilingSprite(hills, hills.baseTexture.width, hills.baseTexture.height);
-        sprites.clouds = new PIXI.TilingSprite(clouds, clouds.baseTexture.width, clouds.baseTexture.height);
+        gameState.sprites.hills = new PIXI.TilingSprite(hills, hills.baseTexture.width, hills.baseTexture.height);
+        gameState.sprites.clouds = new PIXI.TilingSprite(clouds, clouds.baseTexture.width, clouds.baseTexture.height);
 
-        addToScene(sprites.hills, {x: 0, y: 128}, {x: 0, y: 0});
-        addToScene(sprites.clouds, {x: 0, y: 0}, {x: 0, y: 0});
+        addToScene(gameState.sprites.hills, {x: 0, y: 128}, {x: 0, y: 0});
+        addToScene(gameState.sprites.clouds, {x: 0, y: 0}, {x: 0, y: 0});
     }
 
     function setupPlayer () {
-        runningPlayer();
+        toDefaultPlayerAnimation();
     }
     
 }
@@ -84,43 +84,10 @@ function addToScene(sprite, position, tilePosition = null) {
 }
 
 function update() {
-    sprites.hills.tilePosition.x -= 0.2;
-    sprites.clouds.tilePosition.x -= 0.4;
+    gameState.sprites.hills.tilePosition.x -= 0.2;
+    gameState.sprites.clouds.tilePosition.x -= 0.4;
 
     renderer.render(stage);
 
     window.requestAnimationFrame(update);
-}
-
-/*
-    Animations
-    http://pixijs.download/dev/docs/PIXI.AnimatedSprite.html
-*/
-
-function runningPlayer () {
-    var textureArrayRunning = [];
-
-    for (let i = 4; i <= 6; i++) {
-        let testure = TextureCache[i+'.png'];
-        textureArrayRunning.push(testure);
-    }
-
-    let animatedRunningSprite = new PIXI.extras.AnimatedSprite(textureArrayRunning);
-    animatedRunningSprite.position.set(30,230);
-    animatedRunningSprite.anchor.set(0.5);
-    animatedRunningSprite.animationSpeed = .15;
-    animatedRunningSprite.play();
-
-    player.addChild(animatedRunningSprite);
-    // update();
-}
-
-function jumpingPlayer () {
-    ticker = new PIXI.ticker.Ticker();
-    ticker.stop();
-    ticker.add((deltaTime) => {
-        // do something every frame
-        console.log("deltaTime "+ deltaTime);
-    });
-    ticker.start();
 }
