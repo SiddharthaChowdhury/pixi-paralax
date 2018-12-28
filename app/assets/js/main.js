@@ -21,18 +21,6 @@ function init() {
     loader.onComplete.add(() => {
         console.log("Loading Complete ...")
     })
-
-    renderer.plugins.interaction.on( 'mousedown', function() { 
-        console.log('mousedown');  
-        // jumpingPlayer();
-        rollingPlayer();
-    });
-
-    renderer.plugins.interaction.on( 'rightdown', function(e) {
-        console.log('rightdown');  
-        jumpingPlayer();
-        // rollingPlayer();
-    }); 
 }
 
 function loadResource() {
@@ -80,11 +68,12 @@ function resetPlayer () {
 }
 
 function defaultPlayerTransform () {
-    let scalePoint = new PIXI.Point(0.15, 0.15);
+    let scalePoint = new PIXI.Point(0.25, 0.25);
     let positionPoint = new PIXI.Point(gameState.groundSurface.x, gameState.groundSurface.y);
 
     player.scale  = scalePoint;
     player.position = positionPoint;
+    // player.pivot.set(0,20);
 }
 
 function addToScene(sprite, position, tilePosition = null) {
@@ -100,10 +89,8 @@ function addToScene(sprite, position, tilePosition = null) {
 }
 
 function update() {
-    gameState.sprites.hills.tilePosition.x -= 0.2;
-    gameState.sprites.clouds.tilePosition.x -= 0.4;
-
+    gameState.sprites.hills.tilePosition.x -= (0.2 + gameState.timeSlow);
+    gameState.sprites.clouds.tilePosition.x -= (0.4 + gameState.timeSlow);
     renderer.render(stage);
-
     window.requestAnimationFrame(update);
 }
